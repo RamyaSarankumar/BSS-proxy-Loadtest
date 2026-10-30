@@ -1,34 +1,37 @@
 # BSS-proxy-Loadtest
 
 BSS Proxy load test framework for front-end and backend load testing using
-k6. These scripts exercise CARE browser and HTTP flows. The test data is not
-stored in this repository because it contains credentials and customer
-identifiers. Obtain an approved local data file through your team's secure
-process before running the tests.
+k6. These scripts exercise CARE browser and HTTP flows. Country data files
+contain BOIDs, MSISDNs, and taxpayer IDs; login credentials are stored in
+separate local files and are not committed.
 
 ## Test data
 
-By default, the scripts load `dk-data.json` from the project directory.
-Set `COUNTRY=SE` to use `se-data.json`, or set `DATA_FILE` to provide a
-different local JSON file:
+By default, the scripts load `dk-data.json` and `dk-credentials.json` from
+the project directory. Set `COUNTRY=SE` to use the Swedish files, or override
+either path with `DATA_FILE` or `CREDENTIALS_FILE`:
 
 ```sh
-k6 run -e COUNTRY=DK -e DATA_FILE=/secure/path/dk-data.json care-http-backend-test.js
-k6 run -e COUNTRY=SE -e DATA_FILE=/secure/path/se-data.json care-browser-frontend-test.js
+k6 run -e COUNTRY=DK -e CREDENTIALS_FILE=/secure/path/dk-credentials.json care-http-backend-test.js
+k6 run -e COUNTRY=SE -e CREDENTIALS_FILE=/secure/path/se-credentials.json care-browser-frontend-test.js
 ```
 
-The JSON object must contain:
+The data JSON contains the identifier arrays `boids`, `msisdns`, and
+`taxpayerIds`. The separate credentials JSON must contain a `users` array of
+objects with `username` and `password` strings. Keep the credentials file
+private and restrict its filesystem permissions. For example:
 
-- `users`: an array of objects with `username` and `password` strings
-- `boids`: an array of BOID strings
-- `msisdns`: an array of MSISDN strings
-- `taxpayerIds`: an array of taxpayer-ID strings
+```sh
+chmod 600 dk-credentials.json
+```
 
-Keep local data files out of version control. The default `*-data.json` files
-and generated `results/` output are ignored by Git. Store passwords in an
-approved secret manager or inject them into the test runtime; do not commit
-credentials, customer identifiers, or encryption keys. For CI, use the
-platform's protected secrets and approved test-data storage.
+Obtain credentials through your team's approved secure process. For CI,
+inject them from protected secrets or approved secret storage. Never commit
+credentials or encryption keys.
+
+The default `*-credentials.json` files and generated `results/` output are
+ignored by Git. Keep customer identifiers out of public repositories unless
+you have approval to publish them.
 
 ## Running
 

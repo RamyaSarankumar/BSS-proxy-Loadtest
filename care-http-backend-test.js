@@ -5,7 +5,9 @@ import { Trend, Rate } from 'k6/metrics';
 // COUNTRY=DK (default) or SE selects the data file and CARE URL
 const COUNTRY = (__ENV.COUNTRY || 'DK').toUpperCase();
 const DATA_FILE = __ENV.DATA_FILE || `./${COUNTRY.toLowerCase()}-data.json`;
+const CREDENTIALS_FILE = __ENV.CREDENTIALS_FILE || `./${COUNTRY.toLowerCase()}-credentials.json`;
 const data = JSON.parse(open(DATA_FILE));
+const credentials = JSON.parse(open(CREDENTIALS_FILE));
 
 // Config (override with -e NAME=value)
 const DEFAULT_URLS = { DK: 'https://crm.nextrel.3.dk/care', SE: 'https://crm.nextrel.tre.se/care' };
@@ -17,8 +19,8 @@ const BACKEND_PATHS = (__ENV.BACKEND_PATHS || '/?msisdn={msisdn}')
   .map((p) => p.trim())
   .filter(Boolean);
 const USERS = __ENV.USERS_ONLY_PREFIX
-  ? data.users.filter((u) => u.username.startsWith(__ENV.USERS_ONLY_PREFIX))
-  : data.users;
+  ? credentials.users.filter((u) => u.username.startsWith(__ENV.USERS_ONLY_PREFIX))
+  : credentials.users;
 
 // Load is set from the command line: -e VUS=20 -e RAMP_UP=1m -e HOLD=3m -e RAMP_DOWN=1m
 const VUS = parseInt(__ENV.VUS || '20');

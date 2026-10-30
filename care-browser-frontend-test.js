@@ -7,7 +7,9 @@ import { Trend, Rate, Counter } from 'k6/metrics';
 // COUNTRY=DK (default) or SE selects the data file and CARE URL
 const COUNTRY = (__ENV.COUNTRY || 'DK').toUpperCase();
 const DATA_FILE = __ENV.DATA_FILE || `./${COUNTRY.toLowerCase()}-data.json`;
+const CREDENTIALS_FILE = __ENV.CREDENTIALS_FILE || `./${COUNTRY.toLowerCase()}-credentials.json`;
 const data = JSON.parse(open(DATA_FILE));
+const credentials = JSON.parse(open(CREDENTIALS_FILE));
 
 const DEFAULT_URLS = { DK: 'https://crm.nextrel.3.dk/care/', SE: 'https://crm.nextrel.tre.se/care/' };
 const CARE_URL = __ENV.CARE_URL || DEFAULT_URLS[COUNTRY];
@@ -55,7 +57,7 @@ const tabLoadTime = new Trend('tab_load_time', true);
 const tabErrors = new Counter('tab_errors');
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const userFor = () => data.users[(__VU - 1) % data.users.length];
+const userFor = () => credentials.users[(__VU - 1) % credentials.users.length];
 
 // SHARE_SESSIONS=true: each VU logs in once and reuses the cookies in every new
 // browser context, so many VUs can share the 23 users without re-logging in each iteration.
