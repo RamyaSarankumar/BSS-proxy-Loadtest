@@ -1,6 +1,7 @@
-# CARE load tests
+# BSS-proxy-Loadtest
 
-These k6 scripts exercise CARE browser and HTTP flows. The test data is not
+BSS Proxy load test framework for front-end and backend load testing using
+k6. These scripts exercise CARE browser and HTTP flows. The test data is not
 stored in this repository because it contains credentials and customer
 identifiers. Obtain an approved local data file through your team's secure
 process before running the tests.
